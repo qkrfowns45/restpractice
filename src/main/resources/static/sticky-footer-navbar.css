@@ -1,0 +1,12 @@
+/* Custom page CSS
+-------------------------------------------------- */
+/* Not required for template or sticky footer method. */
+
+main > .container {
+  padding: 3rem 1.5rem;
+  text-align: center;
+}
+
+body{
+    padding-top:5rem;
+}
