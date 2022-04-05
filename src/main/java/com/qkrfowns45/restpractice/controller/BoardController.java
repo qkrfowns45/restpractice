@@ -2,6 +2,7 @@ package com.qkrfowns45.restpractice.controller;
 
 import com.qkrfowns45.restpractice.model.Board;
 import com.qkrfowns45.restpractice.repository.BoardRepository;
+import com.qkrfowns45.restpractice.validator.BoardValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -17,6 +18,9 @@ public class BoardController {
 
     @Autowired
     private BoardRepository boardRepository;
+
+    @Autowired
+    private BoardValidator boardValidator;
 
     @GetMapping("/list")
     public String list(Model model){
@@ -39,6 +43,7 @@ public class BoardController {
     @PostMapping("/form")
     public String postform(@Valid Board board, BindingResult bindingResult){
 
+        boardValidator.validate(board,bindingResult);
         if(bindingResult.hasErrors()){
             return "board/form";
         }
