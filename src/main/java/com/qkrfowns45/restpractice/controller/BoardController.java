@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -26,8 +27,12 @@ public class BoardController {
     private BoardValidator boardValidator;
 
     @GetMapping("/list")
-    public String list(Model model, Pageable pageable){
+    public String list(Model model,@PageableDefault(size = 2) Pageable pageable){
         Page<Board> boards = boardRepository.findAll(pageable);
+        int startpage = Math.max(1,boards.getPageable().getPageNumber()-4);
+        int endpage = Math.max(boards.getTotalPages(),boards.getPageable().getPageNumber()+4);
+        model.addAttribute("startPage",startpage);
+        model.addAttribute("endPage",endpage);
         model.addAttribute("boards",boards);
         return "board/list";
     }
