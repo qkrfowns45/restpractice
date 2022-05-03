@@ -2,12 +2,14 @@ package com.qkrfowns45.restpractice.controller;
 
 import com.qkrfowns45.restpractice.model.Board;
 import com.qkrfowns45.restpractice.repository.BoardRepository;
+import com.qkrfowns45.restpractice.service.BoardService;
 import com.qkrfowns45.restpractice.validator.BoardValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -25,6 +27,9 @@ public class BoardController {
 
     @Autowired
     private BoardValidator boardValidator;
+
+    @Autowired
+    private BoardService boardService;
 
     @GetMapping("/list")
     public String list(Model model,@PageableDefault(size = 2) Pageable pageable, @RequestParam(required = false,defaultValue = "") String searchText){
@@ -51,13 +56,15 @@ public class BoardController {
     }
 
     @PostMapping("/form")
-    public String postform(@Valid Board board, BindingResult bindingResult){
+    public String postForm(@Valid Board board, BindingResult bindingResult, Authentication authentication){
 
         boardValidator.validate(board,bindingResult);
         if(bindingResult.hasErrors()){
             return "board/form";
         }
 
+        String username = authentication.getName();
+        boardService.save(username,board);
         boardRepository.save(board);
         return "redirect:/board/list";
     }
